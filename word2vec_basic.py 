@@ -260,6 +260,7 @@ try:
   low_dim_embs = tsne.fit_transform(final_embeddings[:plot_only, :])
   labels = [reverse_dictionary[i] for i in xrange(plot_only)]
   plot_with_labels(low_dim_embs, labels, os.path.join('.', 'fei-tsne.png'))
+  np.save('embedding.npy', final_embeddings)
 
 except ImportError as ex:
   print('Please install sklearn, matplotlib, and scipy to show embeddings.')

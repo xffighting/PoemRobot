@@ -21,13 +21,12 @@ with open(FLAGS.dictionary, encoding='utf-8') as inf:
     dictionary = json.load(inf, encoding='utf-8')
 
 with open(FLAGS.reverse_dictionary, encoding='utf-8') as inf:
-    reverse_dictionary = json.load(inf, encoding='utf-8')
+    reversed_dictionary = json.load(inf, encoding='utf-8')
 
 
-reverse_list = [reverse_dictionary[str(i)]
-                for i in range(len(reverse_dictionary))]
-titles = ['江神子', '蝶恋花', '渔家傲']
-
+reverse_list = [reversed_dictionary[str(i)]
+                for i in range(len(reversed_dictionary))]
+titles = ['江神子', '蝶恋花', '水调歌头']
 
 model = Model(learning_rate=FLAGS.learning_rate, batch_size=1, num_steps=1)
 model.build()
@@ -50,29 +49,29 @@ with tf.Session() as sess:
         exit(0)
 
     for title in titles:
-        state = sess.run(model.state_tensor)
+        state = sess.run(model.init_state)
         # feed title
         for head in title:
             input = utils.index_data(np.array([[head]]), dictionary)
 
             feed_dict = {model.X: input,
-                         model.state_tensor: state,
+                         model.init_state: state,
                          model.keep_prob: 1.0}
 
             pred, state = sess.run(
-                [model.predictions, model.outputs_state_tensor], feed_dict=feed_dict)
+                [model.predictions, model.final_state], feed_dict=feed_dict)
 
-        sentence = title
+        sentence =''
         word_index = pred[0].argsort()[-1]
 
         # generate sample
-        for i in range(64):
+        for i in range(50):
             feed_dict = {model.X: [[word_index]],
-                         model.state_tensor: state,
+                         model.init_state: state,
                          model.keep_prob: 1.0}
 
             pred, state = sess.run(
-                [model.predictions, model.outputs_state_tensor], feed_dict=feed_dict)
+                [model.predictions, model.final_state], feed_dict=feed_dict)
 
             word_index = pred[0].argsort()[-1]
             word = np.take(reverse_list, word_index)
