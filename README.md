@@ -120,7 +120,7 @@ for i in range(8):
 num_steps = 100001
 
 ### 6. 可视化Embedding
-![生成的Emedding图像]（./fei-tsne.png）
+![生成的Emedding图像](./fei-tsne.png)
 可以看到，蓝色圈出的部分，字的含义是比较接近的
 
 ### 7. 保存Embedding结果
